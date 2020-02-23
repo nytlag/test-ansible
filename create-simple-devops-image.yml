@@ -1,0 +1,21 @@
+---
+- hosts: all
+#  become: true  #disabled this line otherwise is not getting pushed
+
+  tasks:
+  - name: create docker image  using war file
+    command: docker build -t simple-devops-image:latest .  #build image with "latest" tag, "." means current directory
+    args:
+      chdir: /opt/docker
+
+  - name: create tag to image
+    command: docker tag simple-devops-image nytlag/simple-devops-image  #  you can also use variables instead of hardcoding
+
+
+  - name: push image on to dockerhub
+    command: docker push nytlag/simple-devops-image:latest
+
+  - name: remove docker images from ansible server
+    command: docker rmi simple-devops-image:latest nytlag/simple-devops-image # this is to remove images
+    ignore_errors: yes
+    
